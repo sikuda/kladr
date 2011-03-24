@@ -35,8 +35,7 @@ void winkladr::updateQuery() {
 
 void winkladr::loadFromDBF() {
 
-    QString dir = QFileDialog::getExistingDirectory(this, tr(
-                                                        "Open DBF directory"));
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open DBF directory"));
     if (dir != "") {
 
         QSqlDatabase dbDBF = QSqlDatabase::addDatabase("QODBC", "dbDBF");
@@ -58,62 +57,62 @@ void winkladr::loadFromDBF() {
         QSqlQuery query(dbDBF);
         query.clear();
         query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM KLADR.DBF");
-        int count = 1000;
+        int count = 100;
         if (query.exec()) {
             while (query.next()) {
                 if (count <= 0) {
                     QSqlDatabase::database().commit();
                     QSqlDatabase::database().transaction();
-                    count = 1000;
+                    count = 100;
+                    QApplication::processEvents();
                 }
                 bool ok = insertStringFromDBF(query);
-                QApplication::processEvents();
-                if (!ok) break;
-                //count--;
-            }
-        }
-
-        query.clear();
-        query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM STREET.DBF");
-        count = 1000;
-        if (query.exec()) {
-            while (query.next()) {
-                if (count <= 0) {
-                    QSqlDatabase::database().commit();
-                    QSqlDatabase::database().transaction();
-                    count = 1000;
-                }
-                bool ok = insertStringFromDBF(query,5);
-                QApplication::processEvents();
-                if (!ok) break;
-                count--;
-            }
-        }
-
-        query.clear();
-        query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM DOMA.DBF");
-        count = 1000;
-        if (query.exec()) {
-            while (query.next()) {
-                if (count <= 0) {
-                    QSqlDatabase::database().commit();
-                    QSqlDatabase::database().transaction();
-                    count = 1000;
-                }
-                bool ok = insertStringFromDBF(query,6);
-                QApplication::processEvents();
                 if (!ok) break;
                 count--;
             }
         }
         QSqlDatabase::database().commit();
+        query.clear();
+        query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM STREET.DBF");
+        count = 100;
+        if (query.exec()) {
+            while (query.next()) {
+                if (count <= 0) {
+                    QSqlDatabase::database().commit();
+                    QSqlDatabase::database().transaction();
+                    count = 100;
+                    QApplication::processEvents();
+                }
+                bool ok = insertStringFromDBF(query);
+                if (!ok) break;
+                count--;
+            }
+        }
+        QSqlDatabase::database().commit();
+//        query.clear();
+//        query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM DOMA.DBF");
+//        count = 1000;
+//        if (query.exec()) {
+//            while (query.next()) {
+//                if (count <= 0) {
+//                    QSqlDatabase::database().commit();
+//                    QSqlDatabase::database().transaction();
+//                    count = 1000;
+//                }
+//                bool ok = insertStringFromDBF(query,6);
+//                QApplication::processEvents();
+//                if (!ok) break;
+//                count--;
+//            }
+//        }
+//        QSqlDatabase::database().commit();
         dbDBF.close();
         updateQuery();
         QApplication::restoreOverrideCursor();
     }
 }
 
-bool winkladr::insertStringFromDBF(QSqlQuery& query, int newtype) {
+inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     QString strCode = query.value(0).toString();
     QString strCode1 = strCode.left(2);
     QString strCode2 = strCode.mid(2, 3);  //region
@@ -125,7 +124,7 @@ bool winkladr::insertStringFromDBF(QSqlQuery& query, int newtype) {
     QString strCode8 = strCode.mid(23, 2); //activity
 
     bool ok;
-    quint64 code = strCode.toLongLong(&ok, 10);
+    double code = strCode.toDouble(&ok);
     if (!ok) code = 0;
     int code1 = strCode1.toInt(&ok, 10);
     if (!ok) code1 = 0;
@@ -150,6 +149,9 @@ bool winkladr::insertStringFromDBF(QSqlQuery& query, int newtype) {
     else if (code3 != 0) type = 3;
     else if (code2 != 0) type = 2;
     else if (code1 != 0) type = 1;
+
+    //ignore last levels(bildings and flats) of kladr
+    if((type == 7) || (type == 6)) return true;
 
     QString name = query.value(1).toString();
     QString socr = query.value(2).toString();

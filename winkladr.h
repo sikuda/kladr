@@ -15,14 +15,14 @@ public:
 
 public slots:
     void updateQuery();
-	void loadFromDBF();
-	void inputAddress();
+    void loadFromDBF();
+    void inputAddress();
 
 private:
     Ui::winkladrClass ui;
     QSqlDatabase db;
 
-    bool insertStringFromDBF(QSqlQuery& query, int newtype = 0);
+    bool insertStringFromDBF(QSqlQuery& query);
 };
 
 #endif // WINKLADR_H

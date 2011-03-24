@@ -13,19 +13,19 @@ public:
     ~Address(){};
 
 public slots:
-	void choose_Region();
-	void choose_Subregion();
-	void choose_City();
-	void choose_Subcity();
-	void choose_Street();
+    void choose_Region();
+    void choose_Subregion();
+    void choose_City();
+    void choose_Subcity();
+    void choose_Street();
 
 private:
-	quint64 code;
-	int code1;
-	int code2;
-	int code3;
-	int code4;
-	int code5;
+    double code;
+    int code1;
+    int code2;
+    int code3;
+    int code4;
+    int code5;
 
     Ui::AddressClass ui;
 };
