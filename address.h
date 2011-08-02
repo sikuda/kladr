@@ -20,7 +20,7 @@ public slots:
     void choose_Street();
 
 private:
-    double code;
+    qint64 code;
     int code1;
     int code2;
     int code3;
