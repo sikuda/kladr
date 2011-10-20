@@ -4,6 +4,7 @@
 #include "winkladr.h"
 #include "address.h"
 
+//constructor
 winkladr::winkladr(QWidget *parent) :
     QMainWindow(parent) {
     ui.setupUi(this);
@@ -20,24 +21,31 @@ winkladr::winkladr(QWidget *parent) :
         QString errs = err.driverText();
         QMessageBox::warning(this, errs, err.text());
     } else {
-        ui.tableView->setAlternatingRowColors(true);
-        ui.tableView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
         updateQuery();
+        ui.tableView->setAlternatingRowColors(true);
+        ui.tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        //ui.tableView->horizontalHeader()->setStretchLastSection(true);
+        //ui.tableView->horizontalHeader()->setResizeMode(0, QHeaderView::ResizeToContents);
     }
 }
 
+//update main window
 void winkladr::updateQuery() {
 
     QSqlQueryModel* model = new QSqlQueryModel(this);
-    model->setQuery("SELECT * FROM KLADR", db);
+    QString strQuery = "SELECT * FROM KLADR";
+    if( !strFind.isEmpty()) strQuery = strQuery + " WHERE KLADR.NAME LIKE '%"+strFind+"%'";
+    model->setQuery(strQuery, db);
     ui.tableView->setModel(model);
 }
 
+//load form directiry with DBF(KLADR, STREET)
 void winkladr::loadFromDBF() {
 
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open DBF directory"));
     if (dir != "") {
 
+        //load slow, but universal driver QODBC
         QSqlDatabase dbDBF = QSqlDatabase::addDatabase("QODBC", "dbDBF");
         dbDBF.setDatabaseName("DRIVER={Microsoft dBase Driver (*.dbf)};FIL={dBase IV;};DefaultDir="+ dir);
         if (!dbDBF.open()) {
@@ -89,29 +97,13 @@ void winkladr::loadFromDBF() {
             }
         }
         QSqlDatabase::database().commit();
-//        query.clear();
-//        query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM DOMA.DBF");
-//        count = 1000;
-//        if (query.exec()) {
-//            while (query.next()) {
-//                if (count <= 0) {
-//                    QSqlDatabase::database().commit();
-//                    QSqlDatabase::database().transaction();
-//                    count = 1000;
-//                }
-//                bool ok = insertStringFromDBF(query,6);
-//                QApplication::processEvents();
-//                if (!ok) break;
-//                count--;
-//            }
-//        }
-//        QSqlDatabase::database().commit();
         dbDBF.close();
         updateQuery();
         QApplication::restoreOverrideCursor();
     }
 }
 
+//
 inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     QString strCode = query.value(0).toString();
     QString strCode1 = strCode.left(2);
@@ -119,9 +111,9 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     QString strCode3 = strCode.mid(5, 3);  //city
     QString strCode4 = strCode.mid(8, 3);  //town
     QString strCode5 = strCode.mid(11, 4); //street
-    QString strCode6 = strCode.mid(15, 4); //bilding
-    QString strCode7 = strCode.mid(19, 4); //flat
-    QString strCode8 = strCode.mid(23, 2); //activity
+    //QString strCode6 = strCode.mid(15, 4); //bilding
+    //QString strCode7 = strCode.mid(19, 4); //flat
+    //QString strCode8 = strCode.mid(23, 2); //activity
 
     bool ok;
     double code = strCode.toDouble(&ok);
@@ -136,22 +128,22 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     if (!ok) code4 = 0;
     int code5 = strCode5.toInt(&ok, 10);
     if (!ok) code5 = 0;
-    int code6 = strCode6.toInt(&ok, 10);
-    if (!ok) code6 = 0;
-    int code7 = strCode7.toInt(&ok, 10);
-    if (!ok) code7 = 0;
+    //int code6 = strCode6.toInt(&ok, 10);
+    //if (!ok) code6 = 0;
+    //int code7 = strCode7.toInt(&ok, 10);
+    //if (!ok) code7 = 0;
 
     int type = 0;
-    if (code7 != 0) type = 7;
-    else if (code6 != 0) type = 6;
-    else if (code5 != 0) type = 5;
+    //if (code7 != 0) type = 7;
+    //else if (code6 != 0) type = 6;
+    if (code5 != 0) type = 5;
     else if (code4 != 0) type = 4;
     else if (code3 != 0) type = 3;
     else if (code2 != 0) type = 2;
     else if (code1 != 0) type = 1;
 
     //ignore last levels(bildings and flats) of kladr
-    if((type == 7) || (type == 6)) return true;
+    //if((type == 7) || (type == 6)) return true;
 
     QString name = query.value(1).toString();
     QString socr = query.value(2).toString();
@@ -179,15 +171,15 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     return true;
 }
 
+//show dialog to input address
 void winkladr::inputAddress() {
     Address* dialog = new Address(this);
     dialog->setModal(true);
     dialog->show();
 }
 
-//
-// Show last sql error
-//
+
+//show last sql error
 void ShowErrorRecord(QSqlQuery& query) {
     QSqlError err = query.lastError();
     QApplication* app = qobject_cast<QApplication *> (qApp);
@@ -196,3 +188,41 @@ void ShowErrorRecord(QSqlQuery& query) {
                              query.executedQuery() + ": " + err.text());
 }
 
+//find by pattern
+void winkladr::on_lineFind_editingFinished()
+{
+    strFind = ui.lineFind->text();
+    updateQuery();
+}
+
+//for TO DO
+void winkladr::on_tableView_entered(const QModelIndex &index)
+{
+   //ViewAddress(index);
+}
+
+void winkladr::on_tableView_doubleClicked(const QModelIndex &index)
+{
+    ViewAddress(index);
+}
+
+void winkladr::ViewAddress(const QModelIndex &index)
+{
+    bool ok;
+
+    QModelIndex  index_code = index.model()->index(index.row(), 6);
+    int code1 = index.model()->data(index_code).toInt(&ok);
+    index_code = index.model()->index(index.row(), 7);
+    int code2 = index.model()->data(index_code).toInt(&ok);
+    index_code = index.model()->index(index.row(), 8);
+    int code3 = index.model()->data(index_code).toInt(&ok);
+    index_code = index.model()->index(index.row(), 9);
+    int code4 = index.model()->data(index_code).toInt(&ok);
+    index_code = index.model()->index(index.row(), 10);
+    int code5 = index.model()->data(index_code).toInt(&ok);
+
+    Address* dialog = new Address(this, code1, code2, code3 ,code4,code5);
+    dialog->setModal(true);
+    dialog->show();
+
+}

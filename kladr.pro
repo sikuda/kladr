@@ -1,3 +1,5 @@
+CONFIG += static
+DEFINES += STATIC
 TEMPLATE = app
 TARGET = kladr
 QT += core \

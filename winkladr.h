@@ -18,11 +18,19 @@ public slots:
     void loadFromDBF();
     void inputAddress();
 
+private slots:
+    void on_lineFind_editingFinished();
+    void on_tableView_entered(const QModelIndex &index);
+    void on_tableView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::winkladrClass ui;
     QSqlDatabase db;
 
+    QString strFind;
+
     bool insertStringFromDBF(QSqlQuery& query);
+    void ViewAddress(const QModelIndex &index);
 };
 
 #endif // WINKLADR_H
