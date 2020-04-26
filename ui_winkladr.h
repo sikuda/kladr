@@ -10,22 +10,22 @@
 #ifndef UI_WINKLADR_H
 #define UI_WINKLADR_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QGridLayout>
-#include <QtGui/QGroupBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStatusBar>
-#include <QtGui/QTableView>
-#include <QtGui/QWidget>
+#include <QVariant>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QTableView>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -128,14 +128,14 @@ public:
 
     void retranslateUi(QMainWindow *winkladrClass)
     {
-        winkladrClass->setWindowTitle(QApplication::translate("winkladrClass", "\320\240\320\276\321\201\321\201\320\270\320\271\321\201\320\272\320\270\320\271 \320\260\320\264\321\200\320\265\321\201\320\275\321\213\320\271 \321\201\320\277\321\200\320\260\320\262\320\276\321\207\320\275\320\270\320\272", 0, QApplication::UnicodeUTF8));
-        actionExit->setText(QApplication::translate("winkladrClass", "\320\222\321\213\321\205\320\276\320\264", 0, QApplication::UnicodeUTF8));
-        actionLoad_form_DBF->setText(QApplication::translate("winkladrClass", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\270\320\267  DBF...", 0, QApplication::UnicodeUTF8));
-        actionInputAddress->setText(QApplication::translate("winkladrClass", "\320\222\320\262\320\276\320\264 \320\260\320\264\321\200\320\265\321\201\320\260", 0, QApplication::UnicodeUTF8));
+        winkladrClass->setWindowTitle(QApplication::translate("winkladrClass", "\320\240\320\276\321\201\321\201\320\270\320\271\321\201\320\272\320\270\320\271 \320\260\320\264\321\200\320\265\321\201\320\275\321\213\320\271 \321\201\320\277\321\200\320\260\320\262\320\276\321\207\320\275\320\270\320\272", 0));
+        actionExit->setText(QApplication::translate("winkladrClass", "\320\222\321\213\321\205\320\276\320\264", 0));
+        actionLoad_form_DBF->setText(QApplication::translate("winkladrClass", "\320\227\320\260\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\270\320\267  DBF...", 0));
+        actionInputAddress->setText(QApplication::translate("winkladrClass", "\320\222\320\262\320\276\320\264 \320\260\320\264\321\200\320\265\321\201\320\260", 0 ));
         groupBoxFind->setTitle(QString());
-        label->setText(QApplication::translate("winkladrClass", "\320\235\320\260\320\271\321\202\320\270:", 0, QApplication::UnicodeUTF8));
-        menuFile->setTitle(QApplication::translate("winkladrClass", "\320\244\320\260\320\271\320\273", 0, QApplication::UnicodeUTF8));
-        menuTest->setTitle(QApplication::translate("winkladrClass", "\320\237\321\200\320\276\320\262\320\265\321\200\320\272\320\260", 0, QApplication::UnicodeUTF8));
+        label->setText(QApplication::translate("winkladrClass", "\320\235\320\260\320\271\321\202\320\270:", 0));
+        menuFile->setTitle(QApplication::translate("winkladrClass", "\320\244\320\260\320\271\320\273", 0));
+        menuTest->setTitle(QApplication::translate("winkladrClass", "\320\237\321\200\320\276\320\262\320\265\321\200\320\272\320\260", 0));
     } // retranslateUi
 
 };

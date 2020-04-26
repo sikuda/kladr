@@ -4,7 +4,8 @@ TEMPLATE = app
 TARGET = kladr
 QT += core \
     gui \
-    sql
+    sql \
+    widgets
 HEADERS += \
     winkladr.h \
     address.h

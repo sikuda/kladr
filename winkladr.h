@@ -1,8 +1,8 @@
 #ifndef WINKLADR_H
 #define WINKLADR_H
 
-#include <QtGui/QMainWindow>
-#include <QtSql/QSqlQuery>
+#include <QMainWindow>
+#include <QSqlQuery>
 #include "ui_winkladr.h"
 
 class winkladr : public QMainWindow
@@ -29,7 +29,7 @@ private:
 
     QString strFind;
 
-    bool insertStringFromDBF(QSqlQuery& query);
+    bool insertStringFromDBF(QSqlQuery& query, QSqlQuery& queryInsert);
     void ViewAddress(const QModelIndex &index);
 };
 

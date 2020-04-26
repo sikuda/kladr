@@ -1,7 +1,7 @@
 #ifndef ADDRESS_H
 #define ADDRESS_H
 
-#include <QtGui/QDialog>
+#include <QDialog>
 #include "ui_address.h"
 
 class Address : public QDialog
@@ -22,7 +22,7 @@ public slots:
 
 private:
 
-    qint64 code;
+    QString code;
     int code1;
     int code2;
     int code3;

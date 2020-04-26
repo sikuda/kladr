@@ -20,7 +20,8 @@ Address::Address(QWidget *parent,  int codeset1, int codeset2, int codeset3, int
     code1 = codeset1; code2 = codeset2; code3 = codeset3; code4 = codeset4; code5 = codeset5;
 
     if(code1!=0){
-        QSqlQuery query("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
+        QSqlQuery query;
+        query.prepare("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
         query.bindValue(":CODE1",code1);
         query.bindValue(":CODE2",0);
         query.bindValue(":CODE3",0);
@@ -38,7 +39,8 @@ Address::Address(QWidget *parent,  int codeset1, int codeset2, int codeset3, int
     }
 
     if(code2!=0){
-        QSqlQuery query("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
+        QSqlQuery query;
+        query.prepare("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
         query.bindValue(":CODE1",code1);
         query.bindValue(":CODE2",code2);
         query.bindValue(":CODE3",0);
@@ -57,7 +59,8 @@ Address::Address(QWidget *parent,  int codeset1, int codeset2, int codeset3, int
 
 
     if(code3!=0){
-        QSqlQuery query("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
+        QSqlQuery query;
+        query.prepare("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
         query.bindValue(":CODE1",code1);
         query.bindValue(":CODE2",code2);
         query.bindValue(":CODE3",code3);
@@ -75,7 +78,8 @@ Address::Address(QWidget *parent,  int codeset1, int codeset2, int codeset3, int
     }
 
     if(code4!=0){
-        QSqlQuery query("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
+        QSqlQuery query;
+        query.prepare("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
         query.bindValue(":CODE1",code1);
         query.bindValue(":CODE2",code2);
         query.bindValue(":CODE3",code3);
@@ -93,7 +97,8 @@ Address::Address(QWidget *parent,  int codeset1, int codeset2, int codeset3, int
     }
 
     if(code5!=0){
-        QSqlQuery query("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
+        QSqlQuery query;
+        query.prepare("SELECT  CODE1, CODE2, CODE3, CODE4, CODE5, NAME, RINDEX FROM KLADR WHERE (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) AND (CODE5=:CODE5)");
         query.bindValue(":CODE1",code1);
         query.bindValue(":CODE2",code2);
         query.bindValue(":CODE3",code3);
@@ -153,9 +158,9 @@ void Address::choose_Region( int codeset ) {
         //choose only one element
         QModelIndex index = selmodel->selectedIndexes().at(0);
         QSqlRecord rec = model->record(index.row());
+        code = rec.field("CODE").value().toString();
         bool ok;
-        code1 = rec.field("CODE").value().toInt(&ok);
-        code = code1 * 100000000000LL; //23 - 0 code 12 digital
+        code1 = code.left(2).toInt(&ok);
         QString name = rec.field("NAME").value().toString();
         ui.region->setText(name);
         ui.subregion->clear();
@@ -214,7 +219,7 @@ void Address::choose_Subregion( int codeset ) {
         QModelIndex index = selmodel->selectedIndexes().at(0);
         QSqlRecord rec = model->record(index.row());
         bool ok;
-        code = rec.field("CODE").value().toDouble(&ok);
+        code = rec.field("CODE").value().toString();
         code1 = rec.field("CODE1").value().toInt(&ok);
         code2 = rec.field("CODE2").value().toInt(&ok);
         QString name = rec.field("NAME").value().toString();
@@ -233,7 +238,8 @@ void Address::choose_City( int codeset )
 {
     QTableView* tableView = new QTableView(this);
     QSqlQueryModel* model = new QSqlQueryModel(this);
-    QSqlQuery query("SELECT CODE, CODE1, CODE2, CODE3, RINDEX, NAME FROM KLADR WHERE (RTYPE = 3) AND (CODE1=:CODE1) AND (CODE2=:CODE2) ORDER BY NAME");
+    QSqlQuery query;
+    query.prepare("SELECT CODE, CODE1, CODE2, CODE3, RINDEX, NAME FROM KLADR WHERE (RTYPE = 3) AND (CODE1=:CODE1) AND (CODE2=:CODE2) ORDER BY NAME");
     query.bindValue(":CODE1",code1);
     query.bindValue(":CODE2",code2);
     if(!query.exec()){
@@ -276,7 +282,7 @@ void Address::choose_City( int codeset )
         QModelIndex index = selmodel->selectedIndexes().at(0);
         QSqlRecord rec = model->record(index.row());
         bool ok;
-        code = rec.field("CODE").value().toDouble(&ok);
+        code = rec.field("CODE").value().toString();
         code1 = rec.field("CODE1").value().toInt(&ok);
         code2 = rec.field("CODE2").value().toInt(&ok);
         code3 = rec.field("CODE3").value().toInt(&ok);
@@ -295,7 +301,8 @@ void Address::choose_Subcity(int codeset)
 {
     QTableView* tableView = new QTableView(this);
     QSqlQueryModel* model = new QSqlQueryModel(this);
-    QSqlQuery query("SELECT  CODE, CODE1, CODE2, CODE3, CODE4, RINDEX, NAME FROM KLADR WHERE (RTYPE = 4) AND (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) ORDER BY NAME");
+    QSqlQuery query;
+    query.prepare("SELECT  CODE, CODE1, CODE2, CODE3, CODE4, RINDEX, NAME FROM KLADR WHERE (RTYPE = 4) AND (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) ORDER BY NAME");
     query.bindValue(":CODE1",code1);
     query.bindValue(":CODE2",code2);
     query.bindValue(":CODE3",code3);
@@ -340,7 +347,7 @@ void Address::choose_Subcity(int codeset)
         QModelIndex index = selmodel->selectedIndexes().at(0);
         QSqlRecord rec = model->record(index.row());
         bool ok;
-        code = rec.field("CODE").value().toDouble(&ok);
+        code = rec.field("CODE").value().toString();
         code1 = rec.field("CODE1").value().toInt(&ok);
         code2 = rec.field("CODE2").value().toInt(&ok);
         code3 = rec.field("CODE3").value().toInt(&ok);
@@ -359,7 +366,8 @@ void Address::choose_Street( int codeset )
 {
     QTableView* tableView = new QTableView(this);
     QSqlQueryModel* model = new QSqlQueryModel(this);
-    QSqlQuery query("SELECT  CODE, CODE1, CODE2, CODE3, CODE4, CODE5, RINDEX, NAME FROM KLADR WHERE (RTYPE = 5) AND (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) ORDER BY NAME");
+    QSqlQuery query;
+    query.prepare("SELECT  CODE, CODE1, CODE2, CODE3, CODE4, CODE5, RINDEX, NAME FROM KLADR WHERE (RTYPE = 5) AND (CODE1=:CODE1) AND (CODE2=:CODE2) AND (CODE3=:CODE3) AND (CODE4=:CODE4) ORDER BY NAME");
     query.bindValue(":CODE1",code1);
     query.bindValue(":CODE2",code2);
     query.bindValue(":CODE3",code3);
@@ -406,7 +414,7 @@ void Address::choose_Street( int codeset )
         QModelIndex index = selmodel->selectedIndexes().at(0);
         QSqlRecord rec = model->record(index.row());
         bool ok;
-        code = rec.field("CODE").value().toDouble(&ok);
+        code = rec.field("CODE").value().toString();
         code1 = rec.field("CODE1").value().toInt(&ok);
         code2 = rec.field("CODE2").value().toInt(&ok);
         code3 = rec.field("CODE3").value().toInt(&ok);
@@ -427,15 +435,13 @@ void Address::setPresentation()
     if(!codec) return;
 
     QString txtPresent = ui.region->text();
-    if(code1!=77) txtPresent = txtPresent + codec->toUnicode(" обл. ,");;
     QString txtIndex = ui.index->text();
     if( !txtIndex.isEmpty() ) txtPresent = ui.index->text() + ", " + txtPresent;
     QString txtSubregion = ui.subregion->text();
-    if( !txtSubregion.isEmpty()) txtPresent = txtPresent + " " + txtSubregion + codec->toUnicode(" р-н. ,");
     QString txtCity  = ui.city->text();
-    if( !txtCity.isEmpty()) txtPresent = txtPresent + codec->toUnicode(" г.") + txtCity;
+    if( !txtCity.isEmpty() ) txtPresent = txtPresent + ", Рі. " + txtCity;
     QString txtStreet  = ui.street->text();
-    if( !txtStreet.isEmpty()) txtPresent = txtPresent + codec->toUnicode(" ул.") + txtStreet;
+    if( !txtStreet.isEmpty() ) txtPresent = txtPresent + ", СѓР». " + txtStreet;
     QString txtHouse  = ui.house->text();
     if( !txtHouse.isEmpty()) txtPresent = txtPresent + " " +ui.cmb_house->currentText() + " " + txtHouse;
     QString txtBilding  = ui.building->text();

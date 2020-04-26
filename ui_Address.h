@@ -10,19 +10,19 @@
 #ifndef UI_ADDRESS_H
 #define UI_ADDRESS_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QComboBox>
-#include <QtGui/QDialog>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QTextEdit>
+#include <QVariant>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QComboBox>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 
@@ -229,35 +229,35 @@ public:
 
     void retranslateUi(QDialog *AddressClass)
     {
-        AddressClass->setWindowTitle(QApplication::translate("AddressClass", "\320\222\320\262\320\276\320\264 \320\260\320\264\321\200\320\265\321\201\320\260", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("AddressClass", "\320\230\320\275\320\264\320\265\320\272\321\201", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("AddressClass", "\320\240\320\265\320\263\320\270\320\276\320\275", 0, QApplication::UnicodeUTF8));
-        label_3->setText(QApplication::translate("AddressClass", "\320\240\320\260\320\271\320\276\320\275", 0, QApplication::UnicodeUTF8));
-        label_4->setText(QApplication::translate("AddressClass", "\320\223\320\276\321\200\320\276\320\264", 0, QApplication::UnicodeUTF8));
-        label_5->setText(QApplication::translate("AddressClass", "\320\235\320\260\321\201\320\265\320\273\320\265\320\275\320\275\321\213\320\271 \320\277\321\203\320\275\320\272\321\202", 0, QApplication::UnicodeUTF8));
-        label_6->setText(QApplication::translate("AddressClass", "\320\243\320\273\320\270\321\206\320\260", 0, QApplication::UnicodeUTF8));
+        AddressClass->setWindowTitle(QApplication::translate("AddressClass", "\320\222\320\262\320\276\320\264 \320\260\320\264\321\200\320\265\321\201\320\260", 0));
+        label->setText(QApplication::translate("AddressClass", "\320\230\320\275\320\264\320\265\320\272\321\201", 0));
+        label_2->setText(QApplication::translate("AddressClass", "\320\240\320\265\320\263\320\270\320\276\320\275", 0));
+        label_3->setText(QApplication::translate("AddressClass", "\320\240\320\260\320\271\320\276\320\275", 0));
+        label_4->setText(QApplication::translate("AddressClass", "\320\223\320\276\321\200\320\276\320\264", 0));
+        label_5->setText(QApplication::translate("AddressClass", "\320\235\320\260\321\201\320\265\320\273\320\265\320\275\320\275\321\213\320\271 \320\277\321\203\320\275\320\272\321\202", 0));
+        label_6->setText(QApplication::translate("AddressClass", "\320\243\320\273\320\270\321\206\320\260", 0));
         cmb_house->clear();
         cmb_house->insertItems(0, QStringList()
-         << QApplication::translate("AddressClass", "\320\264\320\276\320\274", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("AddressClass", "\320\262\320\273\320\260\320\264\320\265\320\275\320\270\320\265", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("AddressClass", "\320\264\320\276\320\274", 0)
+         << QApplication::translate("AddressClass", "\320\262\320\273\320\260\320\264\320\265\320\275\320\270\320\265", 0)
         );
         cmb_building->clear();
         cmb_building->insertItems(0, QStringList()
-         << QApplication::translate("AddressClass", "\320\272\320\276\321\200\320\277\321\203\321\201", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("AddressClass", "\321\201\321\202\321\200\320\276\320\265\320\275\320\270\320\265", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("AddressClass", "\320\272\320\276\321\200\320\277\321\203\321\201", 0)
+         << QApplication::translate("AddressClass", "\321\201\321\202\321\200\320\276\320\265\320\275\320\270\320\265", 0)
         );
         cmb_flat->clear();
         cmb_flat->insertItems(0, QStringList()
-         << QApplication::translate("AddressClass", "\320\272\320\262.", 0, QApplication::UnicodeUTF8)
-         << QApplication::translate("AddressClass", "\320\276\321\204.", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("AddressClass", "\320\272\320\262.", 0)
+         << QApplication::translate("AddressClass", "\320\276\321\204.", 0)
         );
-        label_8->setText(QApplication::translate("AddressClass", "\320\237\321\200\320\265\320\264\321\201\321\202\320\260\320\262\320\273\320\265\320\275\320\270\320\265", 0, QApplication::UnicodeUTF8));
-        label_7->setText(QApplication::translate("AddressClass", "\320\232\320\276\320\274\320\274\320\265\320\275\321\202\320\260\321\200\320\270\320\271", 0, QApplication::UnicodeUTF8));
-        btn_region->setText(QApplication::translate("AddressClass", "...", 0, QApplication::UnicodeUTF8));
-        btn_subregion->setText(QApplication::translate("AddressClass", "...", 0, QApplication::UnicodeUTF8));
-        btn_city->setText(QApplication::translate("AddressClass", "...", 0, QApplication::UnicodeUTF8));
-        btn_subcity->setText(QApplication::translate("AddressClass", "...", 0, QApplication::UnicodeUTF8));
-        btn_street->setText(QApplication::translate("AddressClass", "...", 0, QApplication::UnicodeUTF8));
+        label_8->setText(QApplication::translate("AddressClass", "\320\237\321\200\320\265\320\264\321\201\321\202\320\260\320\262\320\273\320\265\320\275\320\270\320\265", 0));
+        label_7->setText(QApplication::translate("AddressClass", "\320\232\320\276\320\274\320\274\320\265\320\275\321\202\320\260\321\200\320\270\320\271", 0));
+        btn_region->setText(QApplication::translate("AddressClass", "...", 0));
+        btn_subregion->setText(QApplication::translate("AddressClass", "...", 0));
+        btn_city->setText(QApplication::translate("AddressClass", "...", 0));
+        btn_subcity->setText(QApplication::translate("AddressClass", "...", 0));
+        btn_street->setText(QApplication::translate("AddressClass", "...", 0));
     } // retranslateUi
 
 };

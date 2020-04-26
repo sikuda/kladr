@@ -1,5 +1,9 @@
-#include <QtGui>
-#include <QtSql>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlQueryModel>
 
 #include "winkladr.h"
 #include "address.h"
@@ -47,6 +51,7 @@ void winkladr::loadFromDBF() {
 
         //load slow, but universal driver QODBC
         QSqlDatabase dbDBF = QSqlDatabase::addDatabase("QODBC", "dbDBF");
+        //dbDBF.setDatabaseName("Driver={Microsoft dBASE Driver (*.dbf)};DriverID=277;Dbq="+ dir);
         dbDBF.setDatabaseName("DRIVER={Microsoft dBase Driver (*.dbf)};FIL={dBase IV;};DefaultDir="+ dir);
         if (!dbDBF.open()) {
             QSqlError err = dbDBF.lastError();
@@ -56,16 +61,27 @@ void winkladr::loadFromDBF() {
         }
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         QSqlDatabase::database().transaction();
-        QSqlQuery queryInsert1(db);
-        queryInsert1.prepare("DELETE FROM KLADR");
-        queryInsert1.exec();
+        QSqlQuery queryInsert(db);
+        queryInsert.clear();
+        queryInsert.prepare("DROP TABLE KLADR");
+        queryInsert.exec();
+        QSqlDatabase::database().commit();
+        queryInsert.prepare("CREATE TABLE KLADR(CODE TEXT, NAME TEXT, SOCR TEXT, RINDEX INTEGER, ALTNAME TEXT, RTYPE INTEGER, CODE1 INTEGER, CODE2 INTEGER, CODE3 INTEGER, CODE4 INTEGER, CODE5 INTEGER);");
+        queryInsert.exec();
+        QSqlDatabase::database().commit();
+        queryInsert.clear();
+        queryInsert.prepare("DROP TABLE REGIONS");
+        queryInsert.exec();
+        QSqlDatabase::database().commit();
+        queryInsert.prepare("CREATE TABLE REGIONS(CODE TEXT, NAME TEXT, RINDEX INTEGER);");
+        queryInsert.exec();
         QSqlDatabase::database().commit();
 
         QSqlDatabase::database().transaction();
         QSqlQuery query(dbDBF);
         query.clear();
         query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM KLADR.DBF");
-        int count = 100;
+        int count = 1000;
         if (query.exec()) {
             while (query.next()) {
                 if (count <= 0) {
@@ -74,7 +90,7 @@ void winkladr::loadFromDBF() {
                     count = 100;
                     QApplication::processEvents();
                 }
-                bool ok = insertStringFromDBF(query);
+                bool ok = insertStringFromDBF(query, queryInsert);
                 if (!ok) break;
                 count--;
             }
@@ -82,7 +98,7 @@ void winkladr::loadFromDBF() {
         QSqlDatabase::database().commit();
         query.clear();
         query.prepare("SELECT CODE, NAME, SOCR, INDEX FROM STREET.DBF");
-        count = 100;
+        count = 1000;
         if (query.exec()) {
             while (query.next()) {
                 if (count <= 0) {
@@ -91,7 +107,7 @@ void winkladr::loadFromDBF() {
                     count = 100;
                     QApplication::processEvents();
                 }
-                bool ok = insertStringFromDBF(query);
+                bool ok = insertStringFromDBF(query, queryInsert);
                 if (!ok) break;
                 count--;
             }
@@ -104,7 +120,7 @@ void winkladr::loadFromDBF() {
 }
 
 //
-inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
+inline bool winkladr::insertStringFromDBF(QSqlQuery& query, QSqlQuery& queryInsert) {
     QString strCode = query.value(0).toString();
     QString strCode1 = strCode.left(2);
     QString strCode2 = strCode.mid(2, 3);  //region
@@ -115,9 +131,9 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     //QString strCode7 = strCode.mid(19, 4); //flat
     //QString strCode8 = strCode.mid(23, 2); //activity
 
-    bool ok;
-    double code = strCode.toDouble(&ok);
-    if (!ok) code = 0;
+    bool ok = true;
+    //double code = strCode.toDouble(&ok);
+    //if (!ok) code = 0;
     int code1 = strCode1.toInt(&ok, 10);
     if (!ok) code1 = 0;
     int code2 = strCode2.toInt(&ok, 10);
@@ -149,7 +165,6 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     QString socr = query.value(2).toString();
     int intIndex = query.value(3).toInt(&ok);
 
-    QSqlQuery queryInsert(db);
     queryInsert.clear();
     queryInsert.prepare("INSERT INTO KLADR ( CODE, NAME, SOCR, RINDEX, ALTNAME, RTYPE, CODE1, CODE2, CODE3, CODE4, CODE5) VALUES(:CODE, :NAME, :SOCR, :RINDEX ,:ALTNAME, :RTYPE, :CODE1, :CODE2, :CODE3, :CODE4, :CODE5)");
     queryInsert.bindValue(":RTYPE", type);
@@ -158,7 +173,7 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     queryInsert.bindValue(":CODE3", code3);
     queryInsert.bindValue(":CODE4", code4);
     queryInsert.bindValue(":CODE5", code5);
-    queryInsert.bindValue(":CODE", code);
+    queryInsert.bindValue(":CODE", strCode);
     queryInsert.bindValue(":NAME", name);
     queryInsert.bindValue(":SOCR", socr);
     queryInsert.bindValue(":RINDEX", intIndex);
@@ -167,6 +182,19 @@ inline bool winkladr::insertStringFromDBF(QSqlQuery& query) {
     if (!ok) {
         ShowErrorRecord(queryInsert);
         return false;
+    }
+
+    if(type == 1){
+      queryInsert.clear();
+      queryInsert.prepare("INSERT INTO REGIONS( CODE, NAME, RINDEX) VALUES(:CODE, :NAME, :RINDEX)");
+      queryInsert.bindValue(":CODE", strCode);
+      queryInsert.bindValue(":NAME", name);
+      queryInsert.bindValue(":RINDEX", intIndex);
+      ok = queryInsert.exec();
+      if (!ok) {
+          ShowErrorRecord(queryInsert);
+          return false;
+      }
     }
     return true;
 }
