@@ -87,7 +87,7 @@ void winkladr::loadFromDBF() {
                 if (count <= 0) {
                     QSqlDatabase::database().commit();
                     QSqlDatabase::database().transaction();
-                    count = 100;
+                    count = 1000;
                     QApplication::processEvents();
                 }
                 bool ok = insertStringFromDBF(query, queryInsert);
@@ -104,7 +104,7 @@ void winkladr::loadFromDBF() {
                 if (count <= 0) {
                     QSqlDatabase::database().commit();
                     QSqlDatabase::database().transaction();
-                    count = 100;
+                    count = 1000;
                     QApplication::processEvents();
                 }
                 bool ok = insertStringFromDBF(query, queryInsert);
